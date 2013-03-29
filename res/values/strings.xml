@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MainActivity</string>
+ <string name="app_name">Bitcoin Address Book</string>
+
+ <string name="label">label:</string>
+ <string name="my_btc_address">my btc address</string>
+ <string name="address">address:</string>
+
+ <string name="button_show_QR">show QR code</string>
+ <string name="button_scan">scan</string>
+ <string name="button_add">save</string>
+ <string name="button_edit">edit address</string>
+ <string name="button_delete">delete</string>
+
+ <string name="menu_plus">new address</string>
 </resources>

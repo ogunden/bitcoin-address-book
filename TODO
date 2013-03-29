@@ -1,0 +1,3 @@
+- if string starts with "bitcoin:", trim it
+- add "bitcoin:" when displaying qr code
+- Address -> AddressEntry
