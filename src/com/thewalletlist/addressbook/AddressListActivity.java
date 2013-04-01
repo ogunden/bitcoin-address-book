@@ -41,9 +41,10 @@ public class AddressListActivity extends ListActivity {
       new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> av, View view, int pos, long whatisit) {
-          Address addr = (Address) getListView().getItemAtPosition(pos);
+          AddressEntry addr =
+            (AddressEntry) getListView().getItemAtPosition(pos);
           Intent intent = new Intent(AddressListActivity.this, AddressDetailActivity.class);
-          intent.putExtra(C.EXTRA_LABEL, addr.getLabel());
+          intent.putExtra(C.EXTRA_ID, addr.getId());
           startActivity(intent);
         }
       };
@@ -59,7 +60,7 @@ public class AddressListActivity extends ListActivity {
   }
 
   private void redraw(AddressBook b) {
-    ArrayList<Address> addresses = b.getAsList();
+    ArrayList<AddressEntry> addresses = b.getAsList();
     mAdapter.clear();
     for (int i = 0; i < addresses.size(); i++) {
       mAdapter.add(addresses.get(i));

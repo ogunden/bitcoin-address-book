@@ -10,25 +10,27 @@ import android.widget.Toast;
 
 public class NewAddressActivity extends Activity {
 
+  String mId;
+
   @Override public void onCreate(Bundle icy) {
     super.onCreate(icy);
 
     Intent intent = getIntent();
-    String label = intent.getStringExtra(C.EXTRA_LABEL);
+    mId = intent.getStringExtra(C.EXTRA_ID);
 
     setContentView(R.layout.new_address);
 
-    // if we received a label, it's edit mode. prepopulate as much as possible.
-    if (label != null) {
+    // if we received an id, it's edit mode. prepopulate as much as possible.
+    if (mId != null) {
       AddressBook book = AddressBook.load(this);
-      Address a = book.getByLabel(label);
+      AddressEntry a = book.getById(mId);
 
       if (a == null) {
         return;
       }
 
       EditText et_label = (EditText) findViewById(R.id.edittext_label);
-      et_label.setText(label);
+      et_label.setText(a.getLabel());
       EditText et_addy = (EditText) findViewById(R.id.edittext_address);
       et_addy.setText(a.getAddress());
     }
@@ -59,14 +61,17 @@ public class NewAddressActivity extends Activity {
       Toast.makeText(this, "you gotta input SOMETHING", Toast.LENGTH_SHORT).show();
       return;
     }
-    Address address = new Address(label, addy);
+    AddressEntry address = null;
+    if (mId == null) { // new mode, generate new ID
+      address = new AddressEntry(label, addy);
+    } else { // edit mode, reuse ID
+      address = new AddressEntry(mId, label, addy);
+    }
     AddressBook book = AddressBook.load(this);
-    book.add(address);
+    book.addOrUpdate(address);
     book.save(this);
 
-    Intent resultData = new Intent();
-    resultData.putExtra(C.EXTRA_LABEL, label);
-    setResult(Activity.RESULT_OK, resultData);
+    setResult(Activity.RESULT_OK);
     finish();
   }
 

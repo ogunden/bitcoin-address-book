@@ -5,23 +5,53 @@ import org.json.*;
 import android.util.Log;
 
 
-public class Address implements Serializable {
+public class AddressEntry implements Serializable {
 
+  private String mId;
   private String mLabel;
   private String mAddress;
 
-  public Address(String label, String address) {
+  public AddressEntry(String label, String address) {
+    mId = Util.randomString(24);
     mLabel = label;
-    mAddress = address;
+    mAddress = trimPrefix(address);
   }
 
-  public Address(JSONObject j) {
+  public static AddressEntry ofURL(String URL) {
+    // try standard URL parser?
+    // retur
+  }
+
+  public static String trimPrefix(String address) {
+    if (address.startsWith("bitcoin:")) {
+      return address.substring(7,address.length() - 8);
+    } else {
+      return address;
+    }
+  }
+
+  public AddressEntry(String id, String label, String address) {
+    mId = id;
+    mLabel = label;
+    mAddress = trimPrefix(address);
+  }
+
+  public AddressEntry(JSONObject j) {
     try {
+      mId = j.getString("id");
       mLabel = j.getString("label");
       mAddress = j.getString("address");
     } catch (JSONException e) {
       Log.e(C.LOG, "Address(): " + e.toString());
     }
+  }
+
+  public boolean idEquals(String id) {
+    return mId.equals(id);
+  }
+
+  public String getId() {
+    return mId;
   }
 
   public String getLabel() {
@@ -43,6 +73,7 @@ public class Address implements Serializable {
   public JSONObject toJSON() {
     try {
       JSONObject j = new JSONObject();
+      j.put("id",mId);
       j.put("label", mLabel);
       j.put("address", mAddress);
       return j;

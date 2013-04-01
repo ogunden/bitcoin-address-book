@@ -9,7 +9,7 @@ import android.content.Intent;
 
 public class AddressDetailActivity extends Activity {
 
-  private Address mAddress;
+  private AddressEntry mAddress;
 
   private static final int EDIT_REQUEST_ID = 0;
 
@@ -17,10 +17,14 @@ public class AddressDetailActivity extends Activity {
     super.onCreate(icy);
 
     Intent intent = getIntent();
-    String label = intent.getStringExtra(C.EXTRA_LABEL);
+    String id = intent.getStringExtra(C.EXTRA_ID);
+    if (id == null) {
+      setResult(Activity.RESULT_CANCELED);
+      finish();
+    }
 
     AddressBook addressBook = AddressBook.load(this);
-    mAddress = addressBook.getByLabel(label);
+    mAddress = addressBook.getById(id);
 
     if (mAddress == null) {
       setResult(Activity.RESULT_CANCELED);
@@ -47,21 +51,20 @@ public class AddressDetailActivity extends Activity {
 
   public void doQRButton(View view) {
     IntentIntegrator integrator = new IntentIntegrator(this);
-    integrator.shareText(mAddress.getAddress());
+    integrator.shareText("bitcoin;" + mAddress.getAddress());
   }
 
   public void doEditButton(View view) {
     Intent intent = new Intent(this, NewAddressActivity.class);
-    intent.putExtra(C.EXTRA_LABEL, mAddress.getLabel());
+    intent.putExtra(C.EXTRA_ID, mAddress.getId());
     startActivityForResult(intent, EDIT_REQUEST_ID);
   }
 
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     if (requestCode == EDIT_REQUEST_ID) {
       if (resultCode == RESULT_OK) {
-        String newLabel = data.getStringExtra(C.EXTRA_LABEL);
         AddressBook addressBook = AddressBook.load(this);
-        mAddress = addressBook.getByLabel(newLabel);
+        mAddress = addressBook.getById(mAddress.getId());
         redraw();
       }
     }

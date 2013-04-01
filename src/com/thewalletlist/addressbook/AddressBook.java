@@ -9,7 +9,7 @@ import org.json.*;
 public class AddressBook implements Serializable {
 
   private static String FILENAME = "addressbook";
-  private ArrayList<Address> mAddressBook = new ArrayList();
+  private ArrayList<AddressEntry> mAddressBook = new ArrayList();
 
   public AddressBook() {
     return; // results in an empty array
@@ -18,7 +18,7 @@ public class AddressBook implements Serializable {
   public AddressBook(JSONArray a) {
     try {
       for (int i = 0; i < a.length(); i++) {
-        Address addy = new Address(a.getJSONObject(i));
+        AddressEntry addy = new AddressEntry(a.getJSONObject(i));
         mAddressBook.add(addy);
       }
     } catch (JSONException e) {
@@ -26,7 +26,7 @@ public class AddressBook implements Serializable {
     }
   }
 
-  public ArrayList<Address> getAsList() {
+  public ArrayList<AddressEntry> getAsList() {
     return mAddressBook;
   }
 
@@ -34,9 +34,19 @@ public class AddressBook implements Serializable {
     return mAddressBook.size();
   }
 
-  public Address getByLabel(String label) {
+  public AddressEntry getById(String id) {
     for (int i = 0; i < mAddressBook.size(); i++) {
-      Address a = mAddressBook.get(i);
+      AddressEntry a = mAddressBook.get(i);
+      if (a.idEquals(id)) {
+        return a;
+      }
+    }
+    return null;
+  }
+
+  public AddressEntry getByLabel(String label) {
+    for (int i = 0; i < mAddressBook.size(); i++) {
+      AddressEntry a = mAddressBook.get(i);
       if (a.getLabel().equals(label)) {
         return a;
       }
@@ -46,7 +56,7 @@ public class AddressBook implements Serializable {
 
   public int getIndexByLabel(String label) {
     for (int i = 0; i < mAddressBook.size(); i++) {
-      Address a = mAddressBook.get(i);
+      AddressEntry a = mAddressBook.get(i);
       if (a.getLabel().equals(label)) {
         return i;
       }
@@ -54,20 +64,43 @@ public class AddressBook implements Serializable {
     return -1;
   }
 
-  // overwrites if the label matches an existing entry
-  public void add(Address address) {
-    int idx = getIndexByLabel(address.getLabel());
-    if (idx == -1) {
-      mAddressBook.add(address);
-      return;
-    } else {
-      mAddressBook.set(idx, address);
+  public int getIndexById(String id) {
+    for (int i = 0; i < mAddressBook.size(); i++) {
+      AddressEntry a = mAddressBook.get(i);
+      if (a.idEquals(id)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // overwrites if the id matches an existing entry
+  public void addOrUpdate(AddressEntry entry) {
+    boolean found = false;
+    for (int i = 0; i < mAddressBook.size(); i++) {
+      AddressEntry a = mAddressBook.get(i);
+      if (a.idEquals(entry.getId())) {
+        mAddressBook.set(i, entry);
+        found = true;
+      }
+    }
+    if (!found) {
+      mAddressBook.add(entry);
     }
   }
 
-  public void delete(Address address) {
+  public void deleteByLabel(String label) {
     for (int i = 0; i < mAddressBook.size(); i++) {
-      Address a = mAddressBook.get(i);
+      AddressEntry a = mAddressBook.get(i);
+      if (a.getLabel().equals(label)) {
+        mAddressBook.remove(i);
+      }
+    }
+  }
+
+  public void delete(AddressEntry address) {
+    for (int i = 0; i < mAddressBook.size(); i++) {
+      AddressEntry a = mAddressBook.get(i);
       if (a.getLabel().equals(address.getLabel())) {
         mAddressBook.remove(i);
       }
@@ -127,7 +160,7 @@ public class AddressBook implements Serializable {
   public JSONArray toJSON() {
     JSONArray arr = new JSONArray();
     for (int i = 0; i < mAddressBook.size(); i++) {
-      Address addy = mAddressBook.get(i);
+      AddressEntry addy = mAddressBook.get(i);
       arr.put(addy.toJSON());
     }
     return arr;
