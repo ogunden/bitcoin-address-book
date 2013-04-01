@@ -14,26 +14,13 @@ public class AddressEntry implements Serializable {
   public AddressEntry(String label, String address) {
     mId = Util.randomString(24);
     mLabel = label;
-    mAddress = trimPrefix(address);
-  }
-
-  public static AddressEntry ofURL(String URL) {
-    // try standard URL parser?
-    // retur
-  }
-
-  public static String trimPrefix(String address) {
-    if (address.startsWith("bitcoin:")) {
-      return address.substring(7,address.length() - 8);
-    } else {
-      return address;
-    }
+    mAddress = address;
   }
 
   public AddressEntry(String id, String label, String address) {
     mId = id;
     mLabel = label;
-    mAddress = trimPrefix(address);
+    mAddress = address;
   }
 
   public AddressEntry(JSONObject j) {

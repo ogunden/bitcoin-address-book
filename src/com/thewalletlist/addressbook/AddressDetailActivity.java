@@ -51,7 +51,7 @@ public class AddressDetailActivity extends Activity {
 
   public void doQRButton(View view) {
     IntentIntegrator integrator = new IntentIntegrator(this);
-    integrator.shareText("bitcoin;" + mAddress.getAddress());
+    integrator.shareText("bitcoin:" + mAddress.getAddress());
   }
 
   public void doEditButton(View view) {

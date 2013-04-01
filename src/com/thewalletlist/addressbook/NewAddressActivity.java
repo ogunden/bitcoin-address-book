@@ -8,9 +8,20 @@ import android.widget.EditText;
 import android.content.Intent;
 import android.widget.Toast;
 
-public class NewAddressActivity extends Activity {
+import android.app.Dialog;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+
+
+public class NewAddressActivity extends FragmentActivity {
 
   String mId;
+
+  String mScanResult;
+  String mParsedLabel;
 
   @Override public void onCreate(Bundle icy) {
     super.onCreate(icy);
@@ -41,12 +52,33 @@ public class NewAddressActivity extends Activity {
     integrator.initiateScan();
   }
 
+  public void onResume() {
+    super.onResume();
+
+    if (mScanResult != null) {
+      AddressEntry e = Util.parseBitcoinURI(mScanResult);
+      String address = e.getAddress();
+      EditText et_addy = (EditText) findViewById(R.id.edittext_address);
+      et_addy.setText(address);
+
+      mParsedLabel = e.getLabel();
+      EditText etLabel = (EditText) findViewById(R.id.edittext_label);
+      String currLabel = etLabel.getText().toString();
+      if (mParsedLabel != null && currLabel.isEmpty()) {
+        etLabel.setText(mParsedLabel);
+      } else if (mParsedLabel != null && !mParsedLabel.equals(currLabel)) {
+        DialogFragment f = new UseLabelDialogFragment();
+        f.show(getSupportFragmentManager(), "label");
+      }
+    }
+
+    mScanResult = null;
+  }
+
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
     IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
     if (scanResult != null) {
-      String res = scanResult.getContents();
-      EditText et_addy = (EditText) findViewById(R.id.edittext_address);
-      et_addy.setText(res);
+      mScanResult = scanResult.getContents();
     }
   }
 
@@ -73,6 +105,32 @@ public class NewAddressActivity extends Activity {
 
     setResult(Activity.RESULT_OK);
     finish();
+  }
+
+  public class UseLabelDialogFragment extends DialogFragment {
+
+    @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
+      // Use the Builder class for convenient dialog construction
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      String message = "error - mParsedLabel null";
+      if (mParsedLabel != null) {
+        message = "use label '" + mParsedLabel + "' from qr code?";
+      }
+      builder.setMessage(message)
+             .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface dialog, int id) {
+                 EditText etLabel = (EditText) findViewById(R.id.edittext_label);
+                 etLabel.setText(mParsedLabel);
+               }
+             })
+             .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                     // User cancelled the dialog
+                 }
+             });
+      // Create the AlertDialog object and return it
+      return builder.create();
+  }
   }
 
 }
