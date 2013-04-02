@@ -46,6 +46,15 @@ public class AddressDetailActivity extends FragmentActivity {
 
   private void redraw() {
     Log.d(C.LOG, "label is " + mAddress.getLabel());
+
+    ImageView imageCoin = (ImageView) findViewById(R.id.ImageCoin);
+    if (mAddress.getKind() == AddressEntry.KIND_BITCOIN) {
+      imageCoin.setImageDrawable(
+          getResources().getDrawable(R.drawable.bitcoin));
+    } else if (mAddress.getKind() == AddressEntry.KIND_LITECOIN) {
+      imageCoin.setImageDrawable(
+          getResources().getDrawable(R.drawable.litecoin));
+    }
     TextView labelView = (TextView) findViewById(R.id.textview_label);
     labelView.setText(mAddress.getLabel());
 

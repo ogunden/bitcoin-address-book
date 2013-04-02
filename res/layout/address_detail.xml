@@ -4,14 +4,24 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView
+<LinearLayout
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  >
+ <ImageView
+   android:id="@+id/ImageCoin"
+   android:layout_width="wrap_content"
+   android:layout_height="fill_parent"/>
+ <TextView
     android:id="@+id/textview_label"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
     android:gravity="center"
-    android:textSize="36dp"
+    android:textSize="32dp"
     android:padding="10dip"
     />
+</LinearLayout>
 <TextView
     android:id="@+id/textview_address"
     android:layout_width="fill_parent"
