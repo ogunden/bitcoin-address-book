@@ -60,7 +60,14 @@ public class AddressDetailActivity extends FragmentActivity {
 
   public void doQRButton(View view) {
     IntentIntegrator integrator = new IntentIntegrator(this);
-    integrator.shareText("bitcoin:" + mAddress.getAddress());
+    String prefix = "";
+    int kind = mAddress.getKind();
+    if (kind == AddressEntry.KIND_BITCOIN) {
+      prefix = "bitcoin:";
+    } else if (kind == AddressEntry.KIND_LITECOIN) {
+      prefix = "litecoin:";
+    }
+    integrator.shareText(prefix + mAddress.getAddress());
   }
 
   public void doEditButton(View view) {
