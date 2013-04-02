@@ -5,7 +5,6 @@ import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.view.View;
-import android.view.View;
 import android.content.Intent;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import android.util.Log;
 
 public class AddressListActivity extends ListActivity {
 
-  ArrayAdapter mAdapter;
+  AddressEntryAdapter mAdapter;
   ActionMode mActionMode; // state for action bar menu
 
   /** Called when the activity is first created. */
@@ -32,7 +31,7 @@ public class AddressListActivity extends ListActivity {
     super.onCreate(savedInstanceState);
     // TODO: eventually make custom adapter with simple_list_item_2
     // http://stackoverflow.com/questions/11722885/what-is-difference-between-android-r-layout-simple-list-item-1-and-android-r-lay
-    mAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
+    mAdapter = new AddressEntryAdapter(this, R.layout.list_entry);
     ListView listView = getListView();
     listView.setAdapter(mAdapter);
     listView.setClickable(true);

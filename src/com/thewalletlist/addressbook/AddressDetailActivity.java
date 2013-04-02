@@ -6,8 +6,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.content.Intent;
+import android.util.Log;
 
-public class AddressDetailActivity extends Activity {
+import android.app.Dialog;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+
+public class AddressDetailActivity extends FragmentActivity {
 
   private AddressEntry mAddress;
 
@@ -37,6 +45,7 @@ public class AddressDetailActivity extends Activity {
   }
 
   private void redraw() {
+    Log.d(C.LOG, "label is " + mAddress.getLabel());
     TextView labelView = (TextView) findViewById(R.id.textview_label);
     labelView.setText(mAddress.getLabel());
 
@@ -71,12 +80,42 @@ public class AddressDetailActivity extends Activity {
   }
 
   public void doDeleteButton(View view) {
+    DialogFragment f = new AreYouSureDialogFragment();
+    f.show(getSupportFragmentManager(), "areyousure");
+  }
+
+  public void reallyDelete() {
     AddressBook addressBook = AddressBook.load(this);
     addressBook.delete(mAddress);
     addressBook.save(this);
 
     setResult(Activity.RESULT_OK);
     finish();
+  }
+
+  public class AreYouSureDialogFragment extends DialogFragment {
+
+    @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
+      // Use the Builder class for convenient dialog construction
+      AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+      String message = "error - mParsedLabel null";
+      if (mAddress != null) {
+        message = "really delete address '" + mAddress.getLabel() + "'?";
+      }
+      builder.setMessage(message)
+             .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+               public void onClick(DialogInterface dialog, int id) {
+                 reallyDelete();
+               }
+             })
+             .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                 public void onClick(DialogInterface dialog, int id) {
+                     // User cancelled the dialog
+                 }
+             });
+      // Create the AlertDialog object and return it
+      return builder.create();
+    }
   }
 
 }

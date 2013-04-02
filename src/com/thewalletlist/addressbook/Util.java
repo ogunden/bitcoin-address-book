@@ -34,24 +34,27 @@ public class Util {
   }
 
   public static AddressEntry parseBitcoinURI(String uri) {
-    if (uri.startsWith("bitcoin:") || uri.startsWith("litecoin:") {
-      String rest = uri.substring(8);
-      int idx = rest.indexOf('?');
-      if (idx == -1) {
-        return new AddressEntry(null, rest);
-      }
-      String query = rest.substring(idx + 1);
-      String[] queries = query.split("&");
-      String label = null;
-      for (int i = 0; i < queries.length; i++) {
-        if (queries[i].startsWith("label=")) {
-          label = android.net.Uri.decode(queries[i].substring(6));
-        }
-      }
-      return new AddressEntry(label, rest.substring(0, idx));
+    String rest = "";
+    if (uri.startsWith("bitcoin:")) {
+      rest = uri.substring(8);
+    } else if (uri.startsWith("litecoin:")) {
+      rest = uri.substring(9);
     } else {
       return new AddressEntry(null, uri);
     }
+    int idx = rest.indexOf('?');
+    if (idx == -1) {
+      return new AddressEntry(null, rest);
+    }
+    String query = rest.substring(idx + 1);
+    String[] queries = query.split("&");
+    String label = null;
+    for (int i = 0; i < queries.length; i++) {
+      if (queries[i].startsWith("label=")) {
+        label = android.net.Uri.decode(queries[i].substring(6));
+      }
+    }
+    return new AddressEntry(label, rest.substring(0, idx));
   }
 
 }

@@ -130,7 +130,7 @@ public class NewAddressActivity extends FragmentActivity {
              });
       // Create the AlertDialog object and return it
       return builder.create();
-  }
+    }
   }
 
 }
